@@ -1,6 +1,7 @@
 import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
 import del from 'rollup-plugin-delete';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 import typescript from 'rollup-plugin-typescript2'
 
@@ -10,6 +11,7 @@ export default {
   plugins: [
     external(),
     typescript(),
+    terser(),
     babel({
       exclude: 'node_modules/**'
     }),
