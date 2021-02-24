@@ -9,7 +9,7 @@ export default {
   input: "./src/index.ts",
   output: {
     file: 'lib/index.js',
-    format: "esm",
+    format: "cjs",
   },
   plugins: [peerDepsExternal(), resolve(), commonjs(), typescript()]
 };
