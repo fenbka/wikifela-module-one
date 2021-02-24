@@ -1,15 +1,41 @@
-import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
-import typescript from "rollup-plugin-typescript2";
+import typescript from 'rollup-plugin-typescript2';
+import commonjs from 'rollup-plugin-commonjs';
+import external from 'rollup-plugin-peer-deps-external';
+import postcss from 'rollup-plugin-postcss';
+import resolve from 'rollup-plugin-node-resolve';
+import url from 'rollup-plugin-url';
 
-import packageJson from "./package.json";
+import pkg from './package.json';
 
 export default {
-  input: "./src/index.ts",
+  input: 'src/index.ts',
   output: {
-    file: 'lib/index.js',
-    format: "cjs",
+    file: pkg.main,
+    format: 'cjs',
+    exports: 'named',
+    sourcemap: true
   },
-  plugins: [peerDepsExternal(), resolve(), commonjs(), typescript()]
+  plugins: [
+    external(),
+    postcss({
+      modules: false,
+      extract: true,
+      minimize: true,
+      sourceMap: true
+    }),
+    url(),
+    resolve(),
+    typescript({
+      rollupCommonJSResolveHack: true,
+      clean: true,
+      exclude: ['src/**/*.stories.tsx', 'src/**/*.test.(tsx|ts)']
+    }),
+    commonjs({
+      include: 'node_modules/**',
+      namedExports: {
+        'react': ['Children', 'Component', 'PropTypes', 'createElement', 'isValidElement', 'cloneElement'],
+        'react-is': ['isForwardRef', 'isValidElementType', 'ForwardRef', 'Memo', 'isFragment'],
+      },
+    })
+  ]
 };
