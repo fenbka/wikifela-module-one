@@ -13,6 +13,7 @@ export const ClientProfilePage: React.FC = () => {
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = (_e) => {
     history.push('/client/')
   }
+
   return (
     <div>
       client profile page
