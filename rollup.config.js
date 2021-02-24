@@ -1,41 +1,19 @@
-import typescript from 'rollup-plugin-typescript2';
-import commonjs from 'rollup-plugin-commonjs';
+import babel from '@rollup/plugin-babel';
 import external from 'rollup-plugin-peer-deps-external';
-import postcss from 'rollup-plugin-postcss';
-import resolve from 'rollup-plugin-node-resolve';
-import url from 'rollup-plugin-url';
-
+import del from 'rollup-plugin-delete';
 import pkg from './package.json';
+import typescript from 'rollup-plugin-typescript2'
 
 export default {
   input: 'src/index.ts',
-  output: {
-    file: pkg.main,
-    format: 'cjs',
-    exports: 'named',
-    sourcemap: true
-  },
+  output: { file: pkg.main, format: 'cjs' },
   plugins: [
     external(),
-    postcss({
-      modules: false,
-      extract: true,
-      minimize: true,
-      sourceMap: true
+    typescript(),
+    babel({
+      exclude: 'node_modules/**'
     }),
-    url(),
-    resolve(),
-    typescript({
-      rollupCommonJSResolveHack: true,
-      clean: true,
-      exclude: ['src/**/*.stories.tsx', 'src/**/*.test.(tsx|ts)']
-    }),
-    commonjs({
-      include: 'node_modules/**',
-      namedExports: {
-        'react': ['Children', 'Component', 'PropTypes', 'createElement', 'isValidElement', 'cloneElement'],
-        'react-is': ['isForwardRef', 'isValidElementType', 'ForwardRef', 'Memo', 'isFragment'],
-      },
-    })
-  ]
+    del({ targets: ['dist/*'] }),
+  ],
+  external: Object.keys(pkg.peerDependencies || {}),
 };
